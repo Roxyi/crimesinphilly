@@ -14,10 +14,12 @@ function closest(lat,lng) {
           fillColor: "red",
           fillOpacity: 1
         }).setRadius(8).addTo(map);
+      console.log(cm);
       cms.push(cm);
     });
   });
 }
+
 
 function addOneRecord(rec) {
   var title = $('<p></p>')
@@ -48,5 +50,5 @@ function addRecords(cartodbResults) {
 function removecm(array){
   _.each(array,function(ele){
     map.removeLayer(ele);
-  })
+  });
 }

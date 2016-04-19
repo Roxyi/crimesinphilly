@@ -1,12 +1,3 @@
-$('.control').on('mousedown', function() {
-  $(this).toggleClass('pause play');
-});
-
-$(document).on('keyup', function(e) {
-  if (e.which == 32) {
-    $('.control').toggleClass('pause play');
-  }
-});
 // Leaflet map setup
 var map = L.map('map', {
   zoomControl: false,
@@ -34,6 +25,8 @@ $('#btn1').click(function(){
   }
   navigator.geolocation.getCurrentPosition(show);
   flag1 = 1;
+  $("#demo-controllers").click(function(e){
+        console.log(e);});
 });
 
 var myIcon = L.icon({
@@ -70,8 +63,8 @@ var CARTOCSS = [
   'marker-line-width: 0;',
   'marker-line-opacity: 1;',
   'marker-type: ellipse;',
-  'marker-width: 6;',
-  'marker-fill: #0F3B82;',
+  'marker-width: 5;',
+  'marker-fill: #EB9B07;',
   '}',
   '#police_inct[frame-offset=1] {',
   'marker-width:8;',
@@ -92,25 +85,25 @@ var CENSUSCSS = [
   'line-opacity: 1;',
   '}',
   '#census_crimes_15_16 [ crimes <= 1342] {',
-  'polygon-fill: #B10026;',
+  'polygon-fill: #ffa500',
   '}',
   '#census_crimes_15_16 [ crimes <= 406] {',
-  'polygon-fill: #E31A1C;',
+  'polygon-fill: #ffb649',
   '}',
   '#census_crimes_15_16 [ crimes <= 292] {',
-  'polygon-fill: #FC4E2A;',
+  'polygon-fill: #ffc574',
   '}',
   '#census_crimes_15_16 [ crimes <= 239] {',
-  'polygon-fill: #FD8D3C;',
+  'polygon-fill: #ffd499;',
   '}',
   '#census_crimes_15_16 [ crimes <= 192] {',
-  'polygon-fill: #FEB24C;',
+  'polygon-fill: #ffe4bd;',
   '}',
   '#census_crimes_15_16 [ crimes <= 138] {',
-  'polygon-fill: #FED976;',
+  'polygon-fill: #fff1df;',
   '}',
   '#census_crimes_15_16 [ crimes <= 91] {',
-  'polygon-fill: #FFFFB2;',
+  'polygon-fill: #ffffff;',
   '}'
 ].join('\n');
 
@@ -127,6 +120,11 @@ var POINTCSS = [
   'marker-allow-overlap: true;',
 '}'
 ].join('\n');
+
+var census1 = $('<p style="padding:20px 20px 20px 20px;background-color:rgba(10,10,10,0.7);color:white;font-size:20px">')
+.text('The layer shows the chorepleth map of crimes in Philly.');
+var census2 = $('<p style="padding:0px 20px 20px 20px;background-color:rgba(10,10,10,0.7);color:white;font-size:20px">')
+.text('You can hover a census tract to see the number of crimes.');
 
 $('#demo-controllers').hide();
 var opts;
@@ -156,17 +154,18 @@ function refresh(){
 
 function sel_layer(viztype){
   if(viztype == 'points' || viztype == 'census'){
+    $('#demo-controllers2').hide();
     $('#time-window').hide();
     torqueLayer.stop();
     if(viztype == 'points'){
-      var content1 = $('<p style="padding:20px 20px 20px 20px;background-color:rgba(10,10,10,0.7);color:white;font-size:20px">')
-      .text('The layer holds Part I crime for the City of Philadelphia from January 1, 2015 to April 12th, 2016.')
-      var content2 = $('<p style="padding:0px 20px 20px 20px;background-color:rgba(10,10,10,0.7);color:white;font-size:20px">')
+      var point1 = $('<p style="padding:20px 20px 20px 20px;background-color:rgba(10,10,10,0.7);color:white;font-size:20px">')
+      .text('The layer holds Part I crime for the City of Philadelphia from January 1, 2015 to April 12th, 2016.');
+      var point2 = $('<p style="padding:0px 20px 20px 20px;background-color:rgba(10,10,10,0.7);color:white;font-size:20px">')
       .text('Part I crime includes, Homicides, Rapes, Robberies, Aggravated Assaults, Thefts. The data displayed is generalized by the crime type and the block location.');
-      var content3 = $('<p style="padding:0px 20px 20px 20px;background-color:rgba(10,10,10,0.7);color:white;font-size:20px">')
+      var point3 = $('<p style="padding:0px 20px 20px 20px;background-color:rgba(10,10,10,0.7);color:white;font-size:20px">')
       .text('Click the button "My Location" and you will see the nearest 10 crimes occurred in the current time period in the past. '+
       'For example, if the current time is 8:30 AM, the results will be all crimes occurred during 8:00 AM and 9:00 AM in the past.');
-      $('#demo-controllers').append(content1).append(content2).append(content3);
+      $('#demo-controllers').append(point1).append(point2).append(point3);
       $('#legend').hide();
       $('button').show();
       map.removeLayer(torqueLayer);
@@ -179,6 +178,7 @@ function sel_layer(viztype){
             }]
           };
     }else if(viztype == 'census'){
+      $('#demo-controllers').append(census1).append(census2);
       $('#legend').show();
       $('button').hide();
       map.removeLayer(torqueLayer);
@@ -187,7 +187,8 @@ function sel_layer(viztype){
             user_name: "yixu0215",
              sublayers: [{
                 sql: "SELECT * FROM census_crimes_15_16 ", // Required
-                cartocss:  CENSUSCSS
+                cartocss:  CENSUSCSS,
+                interactivity: 'crimes'
             }]
           };
     }
@@ -195,9 +196,22 @@ function sel_layer(viztype){
       .addTo(map)
       .on('done', function(layer) {
         layers = layer;
+        var sublayer = layer.getSubLayer(0);
+        sublayer.setInteraction(true);
+        sublayer.on("featureOver", function(e,latlng,pos,data,layerIndex){
+          var census3 = $('<p style="padding:0px 20px 20px 20px;background-color:rgba(10,10,10,0.7);color:white;font-size:20px">')
+          .text('Crimes: '+data.crimes+'');
+          $('#demo-controllers').empty();
+          $('#demo-controllers').append(census1).append(census2).append(census3);
+
+        });
       });
   }
   else if(viztype=='torque'){
+    $('#demo-controllers2').hide();
+    var torque1 = $('<p style="padding:20px 20px 20px 20px;background-color:rgba(10,10,10,0.7);color:white;font-size:20px">')
+    .text('The layer shows the timeline map of crimes in Philly.');
+    $('#demo-controllers').append(torque1);
     $('#legend').hide();
     $('button').hide();
     $('#time-window').show();
@@ -210,9 +224,16 @@ function sel_layer(viztype){
       if(d.time.toString().length>12){
         $('#time-window').empty();
         $('#time-window').append($('<h1 style="color:white">').text(d.time.toString().split(" ")[1]+" "+d.time.toString().split(" ")[2]+" "+d.time.toString().split(" ")[3]));
-      };
+      }
     });
     torqueLayer.play();
+  }
+  else if(viztype=="about"){
+    $('#demo-controllers2').show();
+    $('#legend').hide();
+    $('button').hide();
+    $('#time-window').hide();
+    map.removeLayer(torqueLayer);
   }
 }
 
