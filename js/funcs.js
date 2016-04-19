@@ -8,13 +8,13 @@ function closest(lat,lng) {
   $.ajax('https://yixu0215.cartodb.com/api/v2/sql/?q=' + sql).done(function(results) {
     addRecords(results);
     _.each(results.rows, function(properties){
-      var cm = L.circleMarker([properties.point_y,properties.point_x],
+      cm = L.circleMarker([properties.point_y,properties.point_x],
         {
           stroke: false,
           fillColor: "red",
           fillOpacity: 1
         }).setRadius(8).addTo(map);
-        console.log(cm._latlng);
+      cms.push(cm);
     });
   });
 }
@@ -30,17 +30,23 @@ function addOneRecord(rec) {
     .text('Time: ' + rec.dispatch_date_time);
 
 
-  var recordElement = $('<li style="background-color:rgba(0,0,0,0);color:white"></li>')
+  var recordElement = $('<li style="background-color:rgba(20,20,20,0.7);color:white"></li>')
     .addClass('list-group-item')
     .append(title)
     .append(location)
     .append(time);
 
-  $('#project-list').append(recordElement);
+  $('#demo-controllers').append(recordElement);
 }
 
 /** Given a cartoDB resultset of records, add them to our list */
 function addRecords(cartodbResults) {
-  $('#project-list').empty();
+  $('#demo-controllers').empty();
   _.each(cartodbResults.rows, addOneRecord);
+}
+
+function removecm(array){
+  _.each(array,function(ele){
+    map.removeLayer(ele);
+  })
 }
