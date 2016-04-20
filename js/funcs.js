@@ -6,7 +6,7 @@ function closest(lat,lng) {
 
 
   $.ajax('https://yixu0215.cartodb.com/api/v2/sql/?q=' + sql).done(function(results) {
-    addRecords(results);
+    $('#demo-controllers').empty();
     _.each(results.rows, function(properties){
       cm = L.circleMarker([properties.point_y,properties.point_x],
         {
@@ -14,14 +14,14 @@ function closest(lat,lng) {
           fillColor: "red",
           fillOpacity: 1
         }).setRadius(8).addTo(map);
-      console.log(cm);
       cms.push(cm);
+      addOneRecord(properties,cm);
     });
   });
 }
 
 
-function addOneRecord(rec) {
+function addOneRecord(rec,cm) {
   var title = $('<p></p>')
     .text('Crime Type: ' + rec.text_general_code);
 
@@ -31,9 +31,10 @@ function addOneRecord(rec) {
   var time = $('<p></p>')
     .text('Time: ' + rec.dispatch_date_time);
 
-
-  var recordElement = $('<li style="background-color:rgba(20,20,20,0.7);color:white"></li>')
+  var recordElement = $('<li></li>')
     .addClass('list-group-item')
+    .attr('id',cm._leaflet_id)
+    .attr('style',"background-color:rgba(20,20,20,0.7);color:white;")
     .append(title)
     .append(location)
     .append(time);
@@ -42,10 +43,10 @@ function addOneRecord(rec) {
 }
 
 /** Given a cartoDB resultset of records, add them to our list */
-function addRecords(cartodbResults) {
-  $('#demo-controllers').empty();
-  _.each(cartodbResults.rows, addOneRecord);
-}
+// function addRecords(cartodbResults) {
+//   $('#demo-controllers').empty();
+//   _.each(cartodbResults.rows, addOneRecord);
+// }
 
 function removecm(array){
   _.each(array,function(ele){
