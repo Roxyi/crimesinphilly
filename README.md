@@ -5,4 +5,4 @@ The data source is https://www.opendataphilly.org/dataset/crime-incidents/resour
 
 There are three types of data visualization: Chorepleth, torque timeline, and nearest crimes.  
 
-Thank [Nathan Zimmerman](https://github.com/moradology) and [Jeff Frankl](https://github.com/jfrankl) for helping me on the codes.
+Thank [Nathan Zimmerman](https://github.com/moradology) and [Jeff Frankl](https://github.com/jfrankl) for helping me on the code.
