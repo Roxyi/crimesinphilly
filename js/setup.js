@@ -26,7 +26,15 @@ $('#btn1').click(function(){
   navigator.geolocation.getCurrentPosition(show);
   flag1 = 1;
   $("#demo-controllers").click(function(e){
-        console.log(e);});
+        _.each(cms,function(cm){
+          if(e.target.offsetParent.id == cm._leaflet_id){
+            cm.setStyle({fillColor: 'orange', radius:10});
+          }
+          else{
+            cm.setStyle({fillColor: 'red', radius:8});
+          }
+        });
+      });
 });
 
 var myIcon = L.icon({
@@ -130,10 +138,11 @@ $('#demo-controllers').hide();
 var opts;
 var layerFlag = 0;
 var layers;
-var torqueLayer = new L.TorqueLayer({
-  user: 'yixu0215',
-  cartocss: CARTOCSS
-});
+var torqueLayer;
+// var torqueLayer = new L.TorqueLayer({
+//   user: 'yixu0215',
+//   cartocss: CARTOCSS
+// });
 
 function refresh(){
   $('#project-list').empty();
@@ -154,9 +163,11 @@ function refresh(){
 
 function sel_layer(viztype){
   if(viztype == 'points' || viztype == 'census'){
+    if(torqueLayer){
+      map.removeLayer(torqueLayer);
+      $('.cartodb-timeslider').hide();
+    }
     $('#demo-controllers2').hide();
-    $('#time-window').hide();
-    torqueLayer.stop();
     if(viztype == 'points'){
       var point1 = $('<p style="padding:20px 20px 20px 20px;background-color:rgba(10,10,10,0.7);color:white;font-size:20px">')
       .text('The layer holds Part I crime for the City of Philadelphia from January 1, 2015 to April 12th, 2016.');
@@ -181,7 +192,6 @@ function sel_layer(viztype){
       $('#demo-controllers').append(census1).append(census2);
       $('#legend').show();
       $('button').hide();
-      map.removeLayer(torqueLayer);
       opts = {
             type: 'cartodb',
             user_name: "yixu0215",
@@ -208,33 +218,47 @@ function sel_layer(viztype){
       });
   }
   else if(viztype=='torque'){
+    var delay=100;
+    setTimeout(function() {
+      $('.slider-wrapper').css('width','328px');
+    }, delay);
     $('#demo-controllers2').hide();
+    $('.cartodb-timeslider').show();
     var torque1 = $('<p style="padding:20px 20px 20px 20px;background-color:rgba(10,10,10,0.7);color:white;font-size:20px">')
     .text('The layer shows the timeline map of crimes in Philly.');
     $('#demo-controllers').append(torque1);
     $('#legend').hide();
     $('button').hide();
-    $('#time-window').show();
-    torqueLayer.addTo(map);
     var currentTime = new Date();
     var hour = currentTime.getHours();
-    var sql = 'SELECT * FROM police_inct WHERE hours = '+hour+'';
-    torqueLayer.setSQL(sql);
-    torqueLayer.on('change:time', function(d) {
-      if(d.time.toString().length>12){
-        $('#time-window').empty();
-        $('#time-window').append($('<h1 style="color:white">').text(d.time.toString().split(" ")[1]+" "+d.time.toString().split(" ")[2]+" "+d.time.toString().split(" ")[3]));
+    var sqlquery = 'SELECT * FROM police_inct WHERE hours = '+hour+'';
+    var layerSource = {
+      type: 'torque',
+      options: {
+        query: sqlquery,
+        user_name: 'yixu0215',
+        cartocss: CARTOCSS
       }
+    };
+    cartodb.createLayer(map, layerSource)
+    .addTo(map)
+    .done(function(layer) {
+      torqueLayer = layer;
+    })
+    .error(function(err) {
+      console.log("Error: " + err);
     });
-    torqueLayer.play();
   }
   else if(viztype=="about"){
+    $('.cartodb-timeslider').hide();
     $('#demo-controllers2').show();
     $('#legend').hide();
     $('button').hide();
-    $('#time-window').hide();
-    map.removeLayer(torqueLayer);
+    if(torqueLayer){
+        map.removeLayer(torqueLayer);
+    }
   }
 }
+
 
 $('input[name="viz"]').click(refresh);
