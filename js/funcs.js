@@ -19,7 +19,11 @@ function closest(lat,lng) {
           stroke: false,
           fillColor: "red",
           fillOpacity: 1
+<<<<<<< HEAD
         }).setRadius(8).bindPopup(list).addTo(map);
+=======
+        }).setRadius(8).addTo(map);
+>>>>>>> origin/master
       cms.push(cm);
       addOneRecord(properties,cm);
     });

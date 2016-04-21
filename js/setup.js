@@ -26,6 +26,7 @@ $('#btn1').click(function(){
   navigator.geolocation.getCurrentPosition(show);
   flag1 = 1;
   $("#demo-controllers").click(function(e){
+<<<<<<< HEAD
         _.each(cms,function(cm){
           if(e.target.offsetParent.id == cm._leaflet_id){
             cm.setStyle({fillColor: 'orange', radius:10});
@@ -33,6 +34,16 @@ $('#btn1').click(function(){
           else{
             cm.setStyle({fillColor: 'red', radius:8});
           }
+=======
+        
+        _.each(cms,function(cm){
+          if(e.target.offsetParent.id == cm._leaflet_id){
+            cm.setStyle({fillColor: 'orange', radius:10})
+          }
+          else{
+            cm.setStyle({fillColor: 'red', radius:8})
+          };
+>>>>>>> origin/master
         });
       });
 });
