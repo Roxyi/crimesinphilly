@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <!-- CSS Imports -->
+    <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/themes/css/cartodb.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.2.3/leaflet.draw.css" />
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="navibar">
+      <p>Crimes in Philly</p>
+      <div class='covis'>
+        <input id="rad1" type="radio" name="viz" value="about" checked><label for="rad1">About</label>
+        <input id="rad2" type="radio" name="viz" value="census"><label for="rad2">Chorepleth</label>
+        <input id="rad3" type="radio" name="viz" value="torque"><label for="rad3">Timeline</label>
+        <input id="rad4" type="radio" name="viz" value="points"><label for="rad4">Crimes Nearby</label>
+    </div>
+    </div>
+    <!-- Sidebar -->
+    <div class="carousel-inner hidden-x" id="demo-controllers">
+      <div id="controller-1" class="demo-container item active" style="background-color:rgba(0,0,0,0)">
+        <ul id="project-list" class="list-group" style="background-color:rgba(30,30,30,0.7)">
+      </div>
+    </div>
+    <!-- <div class="sidebar">
+      <div class="container-fluid">
+        <ul id="project-list" class="list-group">
+        </ul>
+      </div>
+    </div> -->
+    <!-- Map -->
+    <div class="carousel-inner hidden-x" id="demo-controllers2">
+      <p style="font-size:20px">A project by</p>
+      <h2>Yi Xu</h2>
+      <p style="padding:50px 50px 50px 50px;font-size:20px">
+          This is a web mapping interface displaying the crimes in Philly during the time period from 2015-01-01 to 2016-04-12.<br>
+          It aims to help the citizens in Philadelphia know more about crimes in the neighborhood and avoid the dangerous corners.<br>
+          Data Source: <a href="https://www.opendataphilly.org/dataset/crime-incidents/resource/3e00a40d-8444-418c-b3a6-bef5524b90a2">Year-to-Date Part I Crime Incidents</a>
+          <br>
+          See on Github: <a href="https://github.com/Roxyi/crimesinphilly">Github</a>
+      </p>
+    </div>
+    <div id="map" class="map">
+      <button id="btn1">My Location</button>
+      <div id="legend" class='cartodb-legend choropleth'>
+        <ul>
+          <li class="min">
+            91.00
+          </li>
+          <li class="max">
+            1342.00
+          </li>
+          <li class="graph count_441">
+            <div class="colors">
+              <div class="quartile" style="background-color:#ffffff"></div>
+              <div class="quartile" style="background-color:#fff1df"></div>
+              <div class="quartile" style="background-color:#ffe4bd"></div>
+              <div class="quartile" style="background-color:#ffd499"></div>
+              <div class="quartile" style="background-color:#ffc574"></div>
+              <div class="quartile" style="background-color:#ffb649"></div>
+              <div class="quartile" style="background-color:#ffa500"></div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <!-- Javascript Imports -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+    <script src="http://code.jquery.com/jquery-migrate-1.2.1.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <!-- <script src="http://libs.cartocdn.com/cartodb.js/v3/cartodb.js"></script> -->
+    <script src="http://libs.cartocdn.com/cartodb.js/v3/3.13/cartodb_nojquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.2.3/leaflet.draw.js"></script>
+    <script src="js/torque.full.js"></script>
+    <script src="js/funcs.js"></script>
+    <script src="js/setup.js"></script>
+  </body>
+</html>
