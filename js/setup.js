@@ -12,30 +12,13 @@ var layer = L.tileLayer('http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.p
 
 $('button').hide();
 $('#legend').hide();
+$('#finger').hide();
 
 var cms=[];
 var marker;
 var flag=0;
 // Initialise the draw control and pass it the FeatureGroup of editable layers
-$('#btn1').click(function(){
-  $('#demo-controllers').show();
-  if(flag>0){
-      map.removeLayer(marker);
-      flag=0;
-  }
-  navigator.geolocation.getCurrentPosition(show);
-  flag1 = 1;
-  $("#demo-controllers").click(function(e){
-        _.each(cms,function(cm){
-          if(e.target.offsetParent.id == cm._leaflet_id){
-            cm.setStyle({fillColor: 'orange', radius:10});
-          }
-          else{
-            cm.setStyle({fillColor: 'red', radius:8});
-          }
-        });
-      });
-});
+
 
 var myIcon = L.icon({
     iconUrl: 'http://www.myiconfinder.com/uploads/iconsets/256-256-a5485b563efc4511e0cd8bd04ad0fe9e.png',
@@ -139,6 +122,7 @@ var opts;
 var layerFlag = 0;
 var layers;
 var torqueLayer;
+var myVar;
 // var torqueLayer = new L.TorqueLayer({
 //   user: 'yixu0215',
 //   cartocss: CARTOCSS
@@ -162,6 +146,7 @@ function refresh(){
 
 
 function sel_layer(viztype){
+  clearInterval(myVar);
   if(viztype == 'points' || viztype == 'census'){
     if(torqueLayer){
       map.removeLayer(torqueLayer);
@@ -169,6 +154,34 @@ function sel_layer(viztype){
     }
     $('#demo-controllers2').hide();
     if(viztype == 'points'){
+      $('button').show();
+      $('#finger').show();
+      var y = 0;
+      myVar = setInterval(function(){
+        $('#finger').css('top',10*Math.sin(y) + 70 +"px");
+        y += 0.1;
+      },20);
+      $('#btn1').click(function(){
+        $('#finger').hide();
+        clearInterval(myVar);
+        $('#demo-controllers').show();
+        if(flag>0){
+            map.removeLayer(marker);
+            flag=0;
+        }
+        navigator.geolocation.getCurrentPosition(show);
+        flag1 = 1;
+        $("#demo-controllers").click(function(e){
+              _.each(cms,function(cm){
+                if(e.target.offsetParent.id == cm._leaflet_id){
+                  cm.setStyle({fillColor: 'orange', radius:10});
+                }
+                else{
+                  cm.setStyle({fillColor: 'red', radius:8});
+                }
+              });
+            });
+      });
       var point1 = $('<p style="padding:20px 20px 20px 20px;background-color:rgba(10,10,10,0.7);color:white;font-size:20px">')
       .text('The layer holds Part I crime for the City of Philadelphia from January 1, 2015 to April 12th, 2016.');
       var point2 = $('<p style="padding:0px 20px 20px 20px;background-color:rgba(10,10,10,0.7);color:white;font-size:20px">')
@@ -178,7 +191,6 @@ function sel_layer(viztype){
       'For example, if the current time is 8:30 AM, the results will be all crimes occurred during 8:00 AM and 9:00 AM in the past.');
       $('#demo-controllers').append(point1).append(point2).append(point3);
       $('#legend').hide();
-      $('button').show();
       map.removeLayer(torqueLayer);
       opts = {
             type: 'cartodb',
@@ -189,6 +201,7 @@ function sel_layer(viztype){
             }]
           };
     }else if(viztype == 'census'){
+      $('#finger').hide();
       $('#demo-controllers').append(census1).append(census2);
       $('#legend').show();
       $('button').hide();
@@ -218,6 +231,7 @@ function sel_layer(viztype){
       });
   }
   else if(viztype=='torque'){
+    $('#finger').hide();
     var delay=100;
     setTimeout(function() {
       $('.slider-wrapper').css('width','328px');
@@ -250,6 +264,7 @@ function sel_layer(viztype){
     });
   }
   else if(viztype=="about"){
+    $('#finger').hide();
     $('.cartodb-timeslider').hide();
     $('#demo-controllers2').show();
     $('#legend').hide();

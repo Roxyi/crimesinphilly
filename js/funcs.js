@@ -6,6 +6,7 @@ function closest(lat,lng) {
 
 
   $.ajax('https://yixu0215.cartodb.com/api/v2/sql/?q=' + sql).done(function(results) {
+    $('button').hide();
     $('#demo-controllers').empty();
     _.each(results.rows, function(properties){
       var list = "<dl><dt>Crime Type</dt>"+
