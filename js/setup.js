@@ -232,10 +232,6 @@ function sel_layer(viztype){
   }
   else if(viztype=='torque'){
     $('#finger').hide();
-    var delay=100;
-    setTimeout(function() {
-      $('.slider-wrapper').css('width','328px');
-    }, delay);
     $('#demo-controllers2').hide();
     $('.cartodb-timeslider').show();
     var torque1 = $('<p style="padding:20px 20px 20px 20px;background-color:rgba(10,10,10,0.7);color:white;font-size:20px">')
