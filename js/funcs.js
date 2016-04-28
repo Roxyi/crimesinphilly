@@ -23,6 +23,23 @@ function closest(lat,lng) {
         }).setRadius(8).bindPopup(list).addTo(map);
       cms.push(cm);
       addOneRecord(properties,cm);
+      cm.on('click',function(e){
+        for(i=0;i<idlist.length;i++){
+          if(idlist[i]==e.target._leaflet_id){
+            $('li#'+idlist[i]+'.list-group-item').css('color','orange');
+          }else{
+            $('li#'+idlist[i]+'.list-group-item').css('color','white');
+          }
+        }
+        _.each(cms,function(cm){
+          if(e.target._leaflet_id == cm._leaflet_id){
+            cm.setStyle({fillColor: 'orange', radius:10});
+          }
+          else{
+            cm.setStyle({fillColor: 'red', radius:8});
+          }
+        });
+      });
     });
   });
 }
@@ -45,6 +62,7 @@ function addOneRecord(rec,cm) {
     .append(title)
     .append(location)
     .append(time);
+  idlist.push(cm._leaflet_id);
 
   $('#demo-controllers').append(recordElement);
 }

@@ -149,6 +149,7 @@ var layerFlag = 0;
 var layers;
 var torqueLayer;
 var myVar;
+var idlist=[];
 // var torqueLayer = new L.TorqueLayer({
 //   user: 'yixu0215',
 //   cartocss: CARTOCSS
@@ -195,10 +196,22 @@ function sel_layer(viztype){
             map.removeLayer(marker);
             flag=0;
         }
-        navigator.geolocation.getCurrentPosition(show);
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(show);
+        } else {
+          alert("Geolocation is not supported by this browser.");
+        }
         flag1 = 1;
         $("#demo-controllers").click(function(e){
+          for(i=0;i<idlist.length;i++){
+            if(idlist[i]==e.target.offsetParent.id){
+              $('li#'+idlist[i]+'.list-group-item').css('color','orange');
+            }else{
+              $('li#'+idlist[i]+'.list-group-item').css('color','white');
+            }
+          }
               _.each(cms,function(cm){
+                cm.closePopup();
                 if(e.target.offsetParent.id == cm._leaflet_id){
                   cm.setStyle({fillColor: 'orange', radius:10});
                 }
