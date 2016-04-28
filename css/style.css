@@ -79,6 +79,10 @@ div.cartodb-timeslider .slider-wrapper {
     width: 328px;
 }
 
+li#42.list-group-item{
+  background-color: yellow !important;
+}
+
 #carousel-controller {
     position: absolute;
     width: 100%;

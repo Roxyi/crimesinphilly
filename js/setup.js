@@ -67,6 +67,32 @@ var CARTOCSS = [
   '}'
 ].join('\n');
 
+var CARTCSS = [
+  'Map {',
+'-torque-frame-count:32;',
+'-torque-animation-duration:15;',
+'-torque-time-attribute:"dispatch_date_time";',
+'-torque-aggregation-function:"count(cartodb_id)";',
+'-torque-resolution:8;',
+'-torque-data-aggregation:linear;',
+'}',
+
+'#police_inct{',
+  'image-filters: colorize-alpha(blue, cyan, lightgreen, yellow , orange, red);',
+  'marker-file: url(http://s3.amazonaws.com/com.cartodb.assets.static/alphamarker.png);',
+  'marker-fill-opacity: 0.4*[value];',
+  'marker-width: 35;',
+'}',
+'#police_inct[frame-offset=1] {',
+ 'marker-width:37;',
+ 'marker-fill-opacity:0.2;',
+'}',
+'#police_inct[frame-offset=2] {',
+ 'marker-width:39;',
+ 'marker-fill-opacity:0.1;',
+'}'
+].join('\n');
+
 var CENSUSCSS = [
   '#census_crimes_15_16{',
   'polygon-fill: #FFFFB2;',
@@ -230,12 +256,14 @@ function sel_layer(viztype){
         });
       });
   }
-  else if(viztype=='torque'){
+  else if(viztype=='heatmap'){
+    var csstype;
+    var type;
     $('#finger').hide();
     $('#demo-controllers2').hide();
     $('.cartodb-timeslider').show();
     var torque1 = $('<p style="padding:20px 20px 20px 20px;background-color:rgba(10,10,10,0.7);color:white;font-size:20px">')
-    .text('The layer shows the timeline map of crimes in Philly.');
+    .text('The layer shows the animated heat map of crimes in Philly.');
     $('#demo-controllers').append(torque1);
     $('#legend').hide();
     $('button').hide();
@@ -247,7 +275,7 @@ function sel_layer(viztype){
       options: {
         query: sqlquery,
         user_name: 'yixu0215',
-        cartocss: CARTOCSS
+        cartocss: CARTCSS
       }
     };
     cartodb.createLayer(map, layerSource)
