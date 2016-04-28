@@ -6,10 +6,52 @@ var map = L.map('map', {
 });
 new L.Control.Zoom({ position: 'topright' }).addTo(map);
 
+
 var layer = L.tileLayer('http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',{
   attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>'
 }).addTo(map);
 
+var drawControl = new L.Control.Draw({
+  draw: {
+    polyline: false,
+    polygon: false,
+    circle: false,
+    marker: true,
+    rectangle: false,
+  }
+});
+map.addControl(drawControl);
+map.on('draw:created', function (e) {
+  if (drawnLayerID) { map.removeLayer(map._layers[drawnLayerID]); }
+  map.addLayer(e.layer);
+  drawnLayerID = e.layer._leaflet_id;
+  map.setView([e.layer._latlng.lat, e.layer._latlng.lng-0.005],16);
+  if(cms.length>1){
+      removecm(cms);
+  }
+  closest(e.layer._latlng.lat, e.layer._latlng.lng);
+  $("#demo-controllers").click(function(e){
+    for(i=0;i<idlist.length;i++){
+      if(idlist[i]==e.target.offsetParent.id){
+        $('li#'+idlist[i]+'.list-group-item').css('color','orange');
+      }else{
+        $('li#'+idlist[i]+'.list-group-item').css('color','white');
+      }
+    }
+        _.each(cms,function(cm){
+          cm.closePopup();
+          if(e.target.offsetParent.id == cm._leaflet_id){
+            cm.setStyle({fillColor: 'orange', radius:10});
+          }
+          else{
+            cm.setStyle({fillColor: 'red', radius:8});
+          }
+        });
+      });
+  $('#finger').hide();
+});
+
+$('.leaflet-left').hide();
 $('button').hide();
 $('#legend').hide();
 $('#finger').hide();
@@ -150,6 +192,7 @@ var layers;
 var torqueLayer;
 var myVar;
 var idlist=[];
+var drawnLayerID;
 // var torqueLayer = new L.TorqueLayer({
 //   user: 'yixu0215',
 //   cartocss: CARTOCSS
@@ -162,7 +205,7 @@ function refresh(){
   $('#demo-controllers').show();
   if(cms.length>1){
       removecm(cms);
-      map.removeLayer(marker);
+      if (drawnLayerID) { map.removeLayer(map._layers[drawnLayerID]); drawnLayerID=0;}
   }
   if(layers){
     map.removeLayer(layers);
@@ -181,56 +224,56 @@ function sel_layer(viztype){
     }
     $('#demo-controllers2').hide();
     if(viztype == 'points'){
-      $('button').show();
+      $('.leaflet-left').show();
       $('#finger').show();
       var y = 0;
       myVar = setInterval(function(){
         $('#finger').css('top',10*Math.sin(y) + 70 +"px");
         y += 0.1;
       },20);
-      $('#btn1').click(function(){
-        $('#finger').hide();
-        clearInterval(myVar);
-        $('#demo-controllers').show();
-        if(flag>0){
-            map.removeLayer(marker);
-            flag=0;
-        }
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(show);
-        } else {
-          alert("Geolocation is not supported by this browser.");
-        }
-        flag1 = 1;
-        $("#demo-controllers").click(function(e){
-          for(i=0;i<idlist.length;i++){
-            if(idlist[i]==e.target.offsetParent.id){
-              $('li#'+idlist[i]+'.list-group-item').css('color','orange');
-            }else{
-              $('li#'+idlist[i]+'.list-group-item').css('color','white');
-            }
-          }
-              _.each(cms,function(cm){
-                cm.closePopup();
-                if(e.target.offsetParent.id == cm._leaflet_id){
-                  cm.setStyle({fillColor: 'orange', radius:10});
-                }
-                else{
-                  cm.setStyle({fillColor: 'red', radius:8});
-                }
-              });
-            });
-      });
+      // $('#btn1').click(function(){
+      //   $('#finger').hide();
+      //   clearInterval(myVar);
+      //   $('#demo-controllers').show();
+      //   if(flag>0){
+      //       map.removeLayer(marker);
+      //       flag=0;
+      //   }
+      //   if (navigator.geolocation) {
+      //     navigator.geolocation.getCurrentPosition(show);
+      //   } else {
+      //     alert("Geolocation is not supported by this browser.");
+      //   }
+      //   flag1 = 1;
+      //   $("#demo-controllers").click(function(e){
+      //     for(i=0;i<idlist.length;i++){
+      //       if(idlist[i]==e.target.offsetParent.id){
+      //         $('li#'+idlist[i]+'.list-group-item').css('color','orange');
+      //       }else{
+      //         $('li#'+idlist[i]+'.list-group-item').css('color','white');
+      //       }
+      //     }
+      //         _.each(cms,function(cm){
+      //           cm.closePopup();
+      //           if(e.target.offsetParent.id == cm._leaflet_id){
+      //             cm.setStyle({fillColor: 'orange', radius:10});
+      //           }
+      //           else{
+      //             cm.setStyle({fillColor: 'red', radius:8});
+      //           }
+      //         });
+      //       });
+      // });
       var point1 = $('<p style="padding:20px 20px 20px 20px;background-color:rgba(10,10,10,0.7);color:white;font-size:20px">')
       .text('The layer holds Part I crime for the City of Philadelphia from January 1, 2015 to April 12th, 2016.');
       var point2 = $('<p style="padding:0px 20px 20px 20px;background-color:rgba(10,10,10,0.7);color:white;font-size:20px">')
       .text('Part I crime includes, Homicides, Rapes, Robberies, Aggravated Assaults, Thefts. The data displayed is generalized by the crime type and the block location.');
       var point3 = $('<p style="padding:0px 20px 20px 20px;background-color:rgba(10,10,10,0.7);color:white;font-size:20px">')
-      .text('Click the button "My Location" and you will see the nearest 10 crimes occurred in the current time period in the past. '+
+      .text('Click the marker button and you will see the nearest 10 crimes to the marker which occurred in the current time period in the past. '+
       'For example, if the current time is 8:30 AM, the results will be all crimes occurred during 8:00 AM and 9:00 AM in the past.');
       $('#demo-controllers').append(point1).append(point2).append(point3);
       $('#legend').hide();
-      map.removeLayer(torqueLayer);
+      if(torqueLayer){map.removeLayer(torqueLayer)};
       opts = {
             type: 'cartodb',
             user_name: "yixu0215",
@@ -240,10 +283,10 @@ function sel_layer(viztype){
             }]
           };
     }else if(viztype == 'census'){
+      $('.leaflet-left').hide();
       $('#finger').hide();
       $('#demo-controllers').append(census1).append(census2);
       $('#legend').show();
-      $('button').hide();
       opts = {
             type: 'cartodb',
             user_name: "yixu0215",
@@ -279,7 +322,7 @@ function sel_layer(viztype){
     .text('The layer shows the animated heat map of crimes in Philly.');
     $('#demo-controllers').append(torque1);
     $('#legend').hide();
-    $('button').hide();
+    $('.leaflet-left').hide();
     var currentTime = new Date();
     var hour = currentTime.getHours();
     var sqlquery = 'SELECT * FROM police_inct WHERE hours = '+hour+'';
