@@ -7,7 +7,7 @@ body {
 #btn1 {
     position: absolute;
     top: 25px;
-    right: 70px;
+    left: 440px;
     padding: 13px 15px 14px 15px;
     font: normal 15px 'Helvetica Neue', sans-serif;
     color: blue;
@@ -23,6 +23,28 @@ body {
     border: 1px solid #999999;
     background: white;
     z-index: 105;
+}
+
+.leaflet-left .leaflet-control{
+  margin-top: 30px;
+  margin-left:475px;
+}
+
+.leaflet-bar{
+  box-shadow: 0 0px 0px rgba(0,0,0,0);
+}
+
+.leaflet-draw-draw-marker{
+  width: 50px;
+}
+
+#finger{
+  position: absolute;
+  top: 50px;
+  left: 465px;
+  padding: 13px 15px 14px 15px;
+  height:50px;
+  z-index: 105;
 }
 
 .btn-group {
@@ -64,6 +86,14 @@ body {
    letter-spacing: 1px;
    padding-top: 5px;
    padding-left: 5px;
+}
+
+div.cartodb-timeslider .slider-wrapper {
+    width: 328px;
+}
+
+li#42.list-group-item{
+  background-color: yellow !important;
 }
 
 #carousel-controller {
