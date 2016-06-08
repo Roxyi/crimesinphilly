@@ -2,7 +2,7 @@ function closest(lat,lng) {
   // Grab the southwest and northeast points in this rectangle
   var currentTime = new Date();
   var hour = currentTime.getHours();
-  var sql = 'SELECT * FROM police_inct WHERE hours = '+hour+' ORDER BY the_geom <-> ST_Point(' + lng + ',' + lat + ') LIMIT 10';
+  var sql = 'SELECT * FROM police_inct WHERE hours = '+hour+' ORDER BY the_geom <-> ST_SetSRID(ST_MakePoint('+lng+','+lat+'),4326) LIMIT 10';
 
 
   $.ajax('https://yixu0215.cartodb.com/api/v2/sql/?q=' + sql).done(function(results) {
