@@ -96,6 +96,10 @@ li#42.list-group-item{
   background-color: yellow !important;
 }
 
+.list-group-item{
+  cursor: pointer;
+}
+
 #carousel-controller {
     position: absolute;
     width: 100%;
